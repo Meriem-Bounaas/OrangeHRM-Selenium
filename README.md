@@ -1,4 +1,4 @@
-# Test Case: 
+# Test Cases:
 
 1. Admin Login with Invalid credential.
 2. Admin Login with valid credential.
@@ -15,11 +15,7 @@
 13. Logout second user.
 
 
-# Scenario:
-
-
-
-
+# Scenarios:
 
 ### Allure Report:
 
