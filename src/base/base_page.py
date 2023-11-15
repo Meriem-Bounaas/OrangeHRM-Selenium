@@ -8,14 +8,20 @@ class BasePage(PageFactory):
         super().__init__()
         self.driver = driver
 
-    locators = {
-    }
-
     def verify_url(self, url: str) -> bool:
+        '''
+        Function to verify the URL.
+        '''
         return self.driver.current_url == url
 
     def verify_title(self, title: str) -> bool:
+        '''
+        Function to verify the title.
+        '''
         return self.driver.title == title
 
     def verify_header(self, header_element: WebElement, header: str) -> bool:
+        '''
+        Function to verify the header.
+        '''
         return header_element.text == header    

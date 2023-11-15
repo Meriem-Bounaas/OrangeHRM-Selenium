@@ -1,5 +1,4 @@
 import pytest
-from selenium.webdriver.edge.webdriver import WebDriver
 
 from src.pages.login_page import LoginPage
 
@@ -7,7 +6,10 @@ from src.pages.login_page import LoginPage
                                   {'username': '', 'password': 'admin123'},
                                   {'username': 'admin', 'password': 'admin'},
                                   {'username': '', 'password': ''}])
-def test_login_invalid(browser: WebDriver, data, login_page: LoginPage) -> None:
+def test_login_invalid(data, login_page: LoginPage) -> None:
+    '''
+        Test for failed login using invalid username and password.
+    '''
     assert login_page.verify_page_title
     assert login_page.verify_page_url
     

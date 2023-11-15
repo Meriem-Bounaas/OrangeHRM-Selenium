@@ -1,11 +1,9 @@
-import os
 from typing import Iterator
 
 import allure
 import pytest
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
-from selenium.webdriver.common.by import By
 from selenium.webdriver.edge.service import Service as EdgeService
 from selenium.webdriver.edge.webdriver import WebDriver
 from selenium.webdriver.firefox.service import Service as FirefoxService
@@ -15,6 +13,7 @@ from webdriver_manager.microsoft import EdgeChromiumDriverManager
 
 from src.pages.login_page import LoginPage
 from src.pages.dashboard_page import DashboardPage
+from src.pages.pim_page import PimPage
 
 
 def pytest_addoption(parser) -> None:
@@ -77,3 +76,8 @@ def login_page(browser: WebDriver) -> LoginPage:
 def dashboard_page(browser: WebDriver) -> DashboardPage:
     dashboard = DashboardPage(browser)
     yield dashboard
+
+@pytest.fixture() 
+def pim_page(browser: WebDriver) -> PimPage:
+    pim = PimPage(browser)
+    yield pim

@@ -6,7 +6,6 @@ class LoginPage(BasePage):
         super().__init__(driver)
         self.title = 'OrangeHRM'
         self.url = 'https://opensource-demo.orangehrmlive.com/web/index.php/auth/login'
-        self.header = ''
 
     locators = {
         'username': ("NAME", "username"),
@@ -15,17 +14,28 @@ class LoginPage(BasePage):
     }
 
     def login(self, username: str, password: str) -> None:
-        self.driver.get(
-            'https://opensource-demo.orangehrmlive.com/web/index.php/auth/login')
+        '''
+        Function for logging using a username and password.
+        '''
+        self.driver.get(self.url)
         self.username.set_text(username)
         self.password.set_text(password)
         self.loginbtn.click_button()
 
     def verify_page_title(self) -> bool:
-        return self.driver.title == 'OrangeHRM'
+        '''
+        Function to verify the title of the login page.
+        '''
+        return self.driver.title == self.title
 
     def verify_page_url(self) -> bool:
-        return 'https://opensource-demo.orangehrmlive.com/web/index.php/auth/login' in self.driver.current_url
+        '''
+        Function to verify the URL of the login page.
+        '''
+        return self.url in self.driver.current_url
 
-    def invalid_credentials():
+    def invalid_credentials(self) -> bool:
+        '''
+        Function to verify if an element with the text 'invalid credentials' appears.
+        '''
         return 'Invalid credentials' in self.driver.page_source
