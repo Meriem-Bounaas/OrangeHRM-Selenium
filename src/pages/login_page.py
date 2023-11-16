@@ -10,7 +10,8 @@ class LoginPage(BasePage):
     locators = {
         'username': ("NAME", "username"),
         'password': ("NAME", "password"),
-        'loginbtn': ("XPATH", '//*[@id="app"]/div[1]/div/div[1]/div/div[2]/div[2]/form/div[3]/button')
+        'login_button': ("XPATH", "//*[@id=\"app\"]/div[1]/div/div[1]/div/div[2]/div[2]/form/div[3]/button"),
+        'login_element': ("XPATH", "//*[text()='Login']")
     }
 
     def login(self, username: str, password: str) -> None:
@@ -20,7 +21,7 @@ class LoginPage(BasePage):
         self.driver.get(self.url)
         self.username.set_text(username)
         self.password.set_text(password)
-        self.loginbtn.click_button()
+        self.login_button.click_button()
 
     def verify_page_title(self) -> bool:
         '''
@@ -39,3 +40,9 @@ class LoginPage(BasePage):
         Function to verify if an element with the text 'invalid credentials' appears.
         '''
         return 'Invalid credentials' in self.driver.page_source
+    
+    def verify_existence_of_login_text(self) -> bool:
+        '''
+        Function to verify the existence of the text 'Login' on the page.
+        '''
+        return bool(self.login_element)
