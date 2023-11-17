@@ -4,11 +4,8 @@ import string
 
 fake = Faker()
 
-# def find_element(driver, by_locator, locator):
-#     return driver.find_element(by_locator, locator)
-
-# def find_elements(driver, by_locator, locator):
-#     return driver.find_elements(by_locator, locator)
+def verify_header_of_my_info_page(element, text ):
+    return element.text == text
 
 def generate_first_name():
     return fake.name().split(' ')[0]
@@ -19,3 +16,15 @@ def generate_last_name():
 def generate_id():
     characters = string.ascii_letters + string.digits 
     return ''.join(random.choice(characters) for _ in range(5))
+
+def generate_password():
+    return fake.password()
+
+def generate_email():
+    return fake.email()
+
+def generate_city():
+    return fake.city()
+
+def generate_zip():
+    return fake.postcode()

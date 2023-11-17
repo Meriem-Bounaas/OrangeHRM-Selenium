@@ -5,16 +5,16 @@ from src.pages.login_page import LoginPage
 from src.pages.dashboard_page import DashboardPage
 
 @csv_params(
-    data_file="data_login_admin_valid.csv",
-    base_dir=join(dirname(__file__), "assets"),
+    data_file="data_login_employees_valid.csv",
+    # base_dir=join(dirname(__file__), "assets"),
     data_casts={
         "username": str,
         "password": str
     },
 )
-def test_logout(username: str, password: str, login_page: LoginPage, dashboard_page: DashboardPage) -> None:
+def test_login_employee_valid(username: str, password: str, login_page: LoginPage, dashboard_page: DashboardPage) -> None:
     '''
-        Test for Logout.
+        Test for successful login using a valid username and password.
     '''
     assert login_page.verify_page_title()
     assert login_page.verify_page_url()
@@ -22,7 +22,3 @@ def test_logout(username: str, password: str, login_page: LoginPage, dashboard_p
     login_page.login(username, password)
 
     assert dashboard_page.verify_page()
-
-    dashboard_page.logout()
-
-    assert login_page.verify_existence_of_login_text()

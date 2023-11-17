@@ -6,7 +6,7 @@ from src.pages.login_page import LoginPage
 from src.pages.pim_page import PimPage
 
 @csv_params(
-    data_file="data_login_valid.csv",
+    data_file="data_login_admin_valid.csv",
     base_dir=join(dirname(__file__), "assets"),
     data_casts={
         "username": str,
@@ -28,6 +28,6 @@ def test_search_employee_valid(username: str, password: str, dashboard_page: Das
 
     assert pim_page.verify_page()
 
-    pim_page.search_employee_by_id()
+    employee_details = pim_page.search_employee_by_id()
 
-    # TODO : assert pim_page.verify_existing_of_one_employee()
+    assert pim_page.verify_existence_of_one_employee(employee_details)

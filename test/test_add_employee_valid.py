@@ -6,7 +6,7 @@ from src.pages.login_page import LoginPage
 from src.pages.pim_page import PimPage
 
 @csv_params(
-    data_file="data_login_valid.csv",
+    data_file="data_login_admin_valid.csv",
     base_dir=join(dirname(__file__), "assets"),
     data_casts={
         "username": str,
@@ -34,4 +34,4 @@ def test_add_employee_valid(username: str, password: str, dashboard_page: Dashbo
 
     pim_page.fill_form_employee(True)
 
-    assert pim_page.verify_existence_of_personel_details_text()
+    assert pim_page.verify_existence_of_profile_picture()

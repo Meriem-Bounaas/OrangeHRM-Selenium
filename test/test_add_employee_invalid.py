@@ -6,7 +6,7 @@ from src.pages.login_page import LoginPage
 from src.pages.pim_page import PimPage
 
 @csv_params(
-    data_file="data_login_valid.csv",
+    data_file="data_login_admin_valid.csv",
     base_dir=join(dirname(__file__), "assets"),
     data_casts={
         "username": str,

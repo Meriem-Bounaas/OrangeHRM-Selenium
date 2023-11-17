@@ -1,11 +1,9 @@
 import csv
 import os
-
-from os.path import join, dirname
-from pytest_csv_params.decorator import csv_params
+from selenium.webdriver.edge.webdriver import WebDriver
+from selenium.webdriver.common.by import By
 
 from src.base.base_page import BasePage
-from selenium.webdriver.edge.webdriver import WebDriver
 
 from utils.common import *
 
@@ -24,9 +22,21 @@ class PimPage(BasePage):
         'last_name': ("XPATH", "//*[@name='lastName']"),
         'id_employee': ("XPATH", "//*[@id=\"app\"]/div[1]/div[2]/div[2]/div/div/form/div[1]/div[2]/div[1]/div[2]/div/div/div[2]/input"),
         'save_button': ("XPATH", "//*[@class='oxd-button oxd-button--medium oxd-button--secondary orangehrm-left-space']"),
-        'personel_details_element': ("XPATH", "//*[text()='Personal Details']"),
+        'profile_picture_element': ("XPATH", "//*[@class='employee-image']"),
         'required_element': ("XPATH", "//*[text()='Required']"),
-        'table_employee': ("XPATH", "//*[@class='oxd-table-card']")
+        'search_input' : ("XPATH", "//*[@id=\"app\"]/div[1]/div[2]/div[2]/div/div[1]/div[2]/form/div[1]/div/div[2]/div/div[2]/input"),
+        'search_button' : ("XPATH", "//*[@type='submit']"),
+        'reset_button' : ("XPATH", "//*[@type='submit']"),
+        'create_login_detail_button' : ("XPATH", "//*[@class='oxd-switch-input oxd-switch-input--active --label-right']"),
+        'username_input' : ("XPATH", "//*[@id=\"app\"]/div[1]/div[2]/div[2]/div/div/form/div[1]/div[2]/div[3]/div/div[1]/div/div[2]/input"),
+        'password_input' : ("XPATH", "//*[@id=\"app\"]/div[1]/div[2]/div[2]/div/div/form/div[1]/div[2]/div[4]/div/div[1]/div/div[2]/input"),
+        'confirm_password_input' : ("XPATH", "//*[@id=\"app\"]/div[1]/div[2]/div[2]/div/div/form/div[1]/div[2]/div[4]/div/div[2]/div/div[2]/input"),
+        'my_info_button' : ("XPATH", "//*[@href= '/web/index.php/pim/viewMyDetails']"),
+        'personal_details_button' : ("XPATH", "//*[@href= '/web/index.php/pim/viewPersonalDetails/empNumber/7']") ,
+        'contact_details_button' : ("XPATH", "//*[@href= '/web/index.php/pim/contactDetails/empNumber/7']"),
+        'header_form_employee_element' : ("XPATH", "//*[@id=\"app\"]/div[1]/div[2]/div[2]/div/div/div/div[2]/div[1]/h6"),
+        'marital_status_list' : ("XPATH", "//*[@id=\"app\"]/div[1]/div[2]/div[2]/div/div/div/div[2]/div[1]/form/div[3]/div[1]/div[2]/div/div[2]/div/div"),
+        'blood_type_list' : ("XPATH", "//*[@id=\"app\"]/div[1]/div[2]/div[2]/div/div/div/div[2]/div[1]/form/div[3]/div[1]/div[2]/div/div[2]/div/div")
     }
 
     def verify_page(self) -> bool:
@@ -41,11 +51,11 @@ class PimPage(BasePage):
         '''
         return bool(self.save_button)
     
-    def verify_existence_of_personel_details_text(self) -> bool: 
+    def verify_existence_of_profile_picture(self) -> bool: 
         '''
         Function to verify the existence of the text 'Personel Details' on the page.
         '''
-        return bool(self.personel_details_element)
+        return bool(self.profile_picture_element)
     
     def verify_existence_of_required_text(self) -> bool: 
         '''
@@ -66,38 +76,113 @@ class PimPage(BasePage):
         first_name = generate_first_name()
         last_name = generate_last_name()
         id_employee = generate_id()
+        password = generate_password()
 
         if with_username:
             self.first_name.set_text(first_name)
             self.last_name.set_text(last_name)
             self.id_employee.set_text(id_employee)
+
+            self.create_login_detail_button.click_button()
+        
+            user_name = first_name+'-'+last_name
+            
+            self.username_input.set_text(user_name)
+            self.password_input.set_text(password)
+            self.confirm_password_input.set_text(password)
+
+            file_exists = os.path.isfile('data_login_employees_valid.csv')
+
+            with open('data_login_employees_valid.csv', 'a', encoding="UTF8", newline='') as file:
+                writer = csv.writer(file)
+                if not file_exists:
+                    writer.writerow(['username', 'password'])
+                writer.writerow([user_name, password])
+
             self.save_button.click_button()
-
-            # file_exists = os.path.isfile('employee_data.csv')
-            # with open('employee_data.csv', 'a', newline='') as file:
-            #     writer = csv.writer(file)
-            #     if not file_exists:
-            #         writer.writerow(["id", "first_name","last_name"])
-            #     writer.writerow([id_employee, first_name, last_name])
-
+            
         else:
             self.id_employee.set_text(generate_id())
             self.save_button.click_button()
 
-    def search_employee_by_id(self) -> None:
+    def search_employee_by_id(self) -> object:
         '''
         Function to search an employee using ID.
         '''
-    #  TODO : read from table employee une ligne au hasard
-        # print(self.table_employee)
-        # employee_row = random.choice(self.table_employee)
-        # print('employeeeee'+ employee_row)
+        table_employee = self.driver.find_elements(By.XPATH, "//*[@class='oxd-table-card']")
+        employee_row = random.choice(table_employee)
 
-    #  TODO : save id , firstname, generate_last_name
-    #  TODO : search by id , click search
+        id_employee = employee_row.text.splitlines()[0]
+        first_name = employee_row.text.splitlines()[1]
+        last_name = employee_row.text.splitlines()[2]
+
+        self.reset_button.click_button()
+        self.search_input.set_text(id_employee)
+        self.search_button.click_button()
+
+        return ([id_employee, first_name, last_name])
+
   
 
-    # def verify_existing_of_one_employee(self) -> None:
-    #     pass
-    # // TODO : test length is one ligne 
-    # // TODO : test the best firsname et lastname 
+    def verify_existence_of_one_employee(self, employee_details) -> bool:
+        '''
+        Function to verify the existence of one employee in the employees table with the correct username and ID.
+        '''
+        employees_table = self.driver.find_elements(By.XPATH, "//*[@class='oxd-table-card']")
+
+        id_employee = employees_table[0].text.splitlines()[0]
+        first_name = employees_table[0].text.splitlines()[1]
+        last_name = employees_table[0].text.splitlines()[2]
+
+        return (len(employees_table) == 1) and ( id_employee == employee_details[0]) and ( first_name == employee_details[1]) and (last_name == employee_details[2])
+    
+    def go_to_my_info(self) -> None:
+        '''
+        Function to click and access the details information page about an employee.
+        '''
+        self.my_info_button.click_button()
+
+    def go_to_personal_details(self) -> None:
+        '''
+        Function to click and access an employee's personal details.
+        '''
+        self.personal_details_button.click_button()
+
+    def go_to_contcat_details(self) -> None:
+        '''
+        Function to click and access an employee's contact details.
+        '''
+        self.contact_details_button.click_button()
+
+    def verify_header_form_personal_details(self) -> bool:
+        '''
+        Function to verify the header of the personal details form..
+        '''
+        return verify_header_of_my_info_page(self.header_form_employee_element, 'Personal Details')
+    
+    def verify_header_form_contact_details(self) -> bool:
+        '''
+        Function to verify the header of the contact details form.
+        '''
+        return verify_header_of_my_info_page(self.header_form_employee_element, 'Contact Details')
+    
+    def insert_into_personal_details(self) -> None:
+        '''
+        Function to insert marital status, blood type and gender in the personal details form.
+        '''
+        # TODO 
+        self.marital_status_list.click_button()
+        self.blood_type_list.click_button()
+        self.gender_button.click_button()
+
+        self.save_button.click_button()
+
+    def insert_into_contact_details(self) -> None:
+        '''
+        Function to insert city, zip code and email in the contact details form.
+        '''
+        self.city_input.set_text(generate_city())
+        self.zip_input.set_text(generate_zip())
+        self.email_input.set_text(generate_email())
+
+        self.save_button.click_button()
