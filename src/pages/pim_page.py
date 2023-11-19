@@ -6,6 +6,9 @@ from selenium.webdriver.common.by import By
 from src.base.base_page import BasePage
 
 from utils.common import *
+import time
+from os.path import join, dirname
+from pathlib import Path
 
 
 class PimPage(BasePage):
@@ -14,7 +17,7 @@ class PimPage(BasePage):
         self.title = 'OrangeHRM'
         self.url = 'https://opensource-demo.orangehrmlive.com/web/index.php/pim/viewEmployeeList'
         self.header = 'PIM'
-    
+
     locators = {
         'header_element': ("XPATH", "//*[@id=\"app\"]/div[1]/div[1]/header/div[1]/div[1]/span/h6"),
         'add_button': ("XPATH", "//*[@id=\"app\"]/div[1]/div[2]/div[2]/div/div[2]/div[1]/button"),
@@ -24,19 +27,19 @@ class PimPage(BasePage):
         'save_button': ("XPATH", "//*[@class='oxd-button oxd-button--medium oxd-button--secondary orangehrm-left-space']"),
         'profile_picture_element': ("XPATH", "//*[@class='employee-image']"),
         'required_element': ("XPATH", "//*[text()='Required']"),
-        'search_input' : ("XPATH", "//*[@id=\"app\"]/div[1]/div[2]/div[2]/div/div[1]/div[2]/form/div[1]/div/div[2]/div/div[2]/input"),
-        'search_button' : ("XPATH", "//*[@type='submit']"),
-        'reset_button' : ("XPATH", "//*[@type='submit']"),
-        'create_login_detail_button' : ("XPATH", "//*[@class='oxd-switch-input oxd-switch-input--active --label-right']"),
-        'username_input' : ("XPATH", "//*[@id=\"app\"]/div[1]/div[2]/div[2]/div/div/form/div[1]/div[2]/div[3]/div/div[1]/div/div[2]/input"),
-        'password_input' : ("XPATH", "//*[@id=\"app\"]/div[1]/div[2]/div[2]/div/div/form/div[1]/div[2]/div[4]/div/div[1]/div/div[2]/input"),
-        'confirm_password_input' : ("XPATH", "//*[@id=\"app\"]/div[1]/div[2]/div[2]/div/div/form/div[1]/div[2]/div[4]/div/div[2]/div/div[2]/input"),
-        'my_info_button' : ("XPATH", "//*[@href= '/web/index.php/pim/viewMyDetails']"),
-        'personal_details_button' : ("XPATH", "//*[@href= '/web/index.php/pim/viewPersonalDetails/empNumber/7']") ,
-        'contact_details_button' : ("XPATH", "//*[@href= '/web/index.php/pim/contactDetails/empNumber/7']"),
-        'header_form_employee_element' : ("XPATH", "//*[@id=\"app\"]/div[1]/div[2]/div[2]/div/div/div/div[2]/div[1]/h6"),
-        'marital_status_list' : ("XPATH", "//*[@id=\"app\"]/div[1]/div[2]/div[2]/div/div/div/div[2]/div[1]/form/div[3]/div[1]/div[2]/div/div[2]/div/div"),
-        'blood_type_list' : ("XPATH", "//*[@id=\"app\"]/div[1]/div[2]/div[2]/div/div/div/div[2]/div[1]/form/div[3]/div[1]/div[2]/div/div[2]/div/div")
+        'search_input': ("XPATH", "//*[@id=\"app\"]/div[1]/div[2]/div[2]/div/div[1]/div[2]/form/div[1]/div/div[2]/div/div[2]/input"),
+        'search_button': ("XPATH", "//*[@type='submit']"),
+        'reset_button': ("XPATH", "//*[@type='submit']"),
+        'create_login_detail_button': ("XPATH", "//*[@class='oxd-switch-input oxd-switch-input--active --label-right']"),
+        'username_input': ("XPATH", "//*[@id=\"app\"]/div[1]/div[2]/div[2]/div/div/form/div[1]/div[2]/div[3]/div/div[1]/div/div[2]/input"),
+        'password_input': ("XPATH", "//*[@id=\"app\"]/div[1]/div[2]/div[2]/div/div/form/div[1]/div[2]/div[4]/div/div[1]/div/div[2]/input"),
+        'confirm_password_input': ("XPATH", "//*[@id=\"app\"]/div[1]/div[2]/div[2]/div/div/form/div[1]/div[2]/div[4]/div/div[2]/div/div[2]/input"),
+        'my_info_button': ("XPATH", "//*[@href= '/web/index.php/pim/viewMyDetails']"),
+        'personal_details_button': ("XPATH", "//*[@href= '/web/index.php/pim/viewPersonalDetails/empNumber/7']"),
+        'contact_details_button': ("XPATH", "//*[@href= '/web/index.php/pim/contactDetails/empNumber/7']"),
+        'header_form_employee_element': ("XPATH", "//*[@id=\"app\"]/div[1]/div[2]/div[2]/div/div/div/div[2]/div[1]/h6"),
+        'marital_status_list': ("XPATH", "//*[@id=\"app\"]/div[1]/div[2]/div[2]/div/div/div/div[2]/div[1]/form/div[3]/div[1]/div[2]/div/div[2]/div/div"),
+        'blood_type_list': ("XPATH", "//*[@id=\"app\"]/div[1]/div[2]/div[2]/div/div/div/div[2]/div[1]/form/div[3]/div[1]/div[2]/div/div[2]/div/div")
     }
 
     def verify_page(self) -> bool:
@@ -44,25 +47,25 @@ class PimPage(BasePage):
         Function to verify url and title and header of the dashboard login.
         '''
         return super().verify_url(self.url) and super().verify_title(self.title) and super().verify_header(self.header_element, self.header)
-    
-    def verify_existence_of_add_employee_text(self) -> bool: 
+
+    def verify_existence_of_add_employee_text(self) -> bool:
         '''
         Function to verify the existence of the text 'add employee' on the page.
         '''
         return bool(self.save_button)
-    
-    def verify_existence_of_profile_picture(self) -> bool: 
+
+    def verify_existence_of_profile_picture(self) -> bool:
         '''
         Function to verify the existence of the text 'Personel Details' on the page.
         '''
         return bool(self.profile_picture_element)
-    
-    def verify_existence_of_required_text(self) -> bool: 
+
+    def verify_existence_of_required_text(self) -> bool:
         '''
         Function to verify the existence of the text 'Required' on the page.
         '''
         return bool(self.required_element)
-    
+
     def click_button_add_employee(self) -> None:
         '''
         Function to click the 'Add' button for adding an employee.
@@ -84,32 +87,39 @@ class PimPage(BasePage):
             self.id_employee.set_text(id_employee)
 
             self.create_login_detail_button.click_button()
-        
-            user_name = first_name+'-'+last_name
-            
+
+            user_name = first_name+last_name
+
             self.username_input.set_text(user_name)
             self.password_input.set_text(password)
             self.confirm_password_input.set_text(password)
 
-            file_exists = os.path.isfile('data_login_employees_valid.csv')
+            self.save_button.click_button()
 
-            with open('data_login_employees_valid.csv', 'a', encoding="UTF8", newline='') as file:
+            path = Path(__file__).parent.parent.parent
+
+            filename = os.path.join(
+                path, 'test/assets/data_login_employees_valid.csv')
+            file_exists = os.path.isfile(filename)
+
+            with open(filename, 'a', encoding="UTF8", newline='') as file:
                 writer = csv.writer(file)
                 if not file_exists:
                     writer.writerow(['username', 'password'])
                 writer.writerow([user_name, password])
 
-            self.save_button.click_button()
-            
         else:
             self.id_employee.set_text(generate_id())
             self.save_button.click_button()
+
+        time.sleep(5)
 
     def search_employee_by_id(self) -> object:
         '''
         Function to search an employee using ID.
         '''
-        table_employee = self.driver.find_elements(By.XPATH, "//*[@class='oxd-table-card']")
+        table_employee = self.driver.find_elements(
+            By.XPATH, "//*[@class='oxd-table-card']")
         employee_row = random.choice(table_employee)
 
         id_employee = employee_row.text.splitlines()[0]
@@ -122,20 +132,19 @@ class PimPage(BasePage):
 
         return ([id_employee, first_name, last_name])
 
-  
-
     def verify_existence_of_one_employee(self, employee_details) -> bool:
         '''
         Function to verify the existence of one employee in the employees table with the correct username and ID.
         '''
-        employees_table = self.driver.find_elements(By.XPATH, "//*[@class='oxd-table-card']")
+        employees_table = self.driver.find_elements(
+            By.XPATH, "//*[@class='oxd-table-card']")
 
         id_employee = employees_table[0].text.splitlines()[0]
         first_name = employees_table[0].text.splitlines()[1]
         last_name = employees_table[0].text.splitlines()[2]
 
-        return (len(employees_table) == 1) and ( id_employee == employee_details[0]) and ( first_name == employee_details[1]) and (last_name == employee_details[2])
-    
+        return (len(employees_table) == 1) and (id_employee == employee_details[0]) and (first_name == employee_details[1]) and (last_name == employee_details[2])
+
     def go_to_my_info(self) -> None:
         '''
         Function to click and access the details information page about an employee.
@@ -159,18 +168,18 @@ class PimPage(BasePage):
         Function to verify the header of the personal details form..
         '''
         return verify_header_of_my_info_page(self.header_form_employee_element, 'Personal Details')
-    
+
     def verify_header_form_contact_details(self) -> bool:
         '''
         Function to verify the header of the contact details form.
         '''
         return verify_header_of_my_info_page(self.header_form_employee_element, 'Contact Details')
-    
+
     def insert_into_personal_details(self) -> None:
         '''
         Function to insert marital status, blood type and gender in the personal details form.
         '''
-        # TODO 
+        # TODO
         self.marital_status_list.click_button()
         self.blood_type_list.click_button()
         self.gender_button.click_button()
