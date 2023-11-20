@@ -9,6 +9,7 @@ from selenium.webdriver.common.by import By
 from src.base.base_page import BasePage
 from utils.common import *
 
+
 class PimPage(BasePage):
     def __init__(self, driver: WebDriver) -> None:
         super().__init__(driver)
@@ -36,11 +37,12 @@ class PimPage(BasePage):
         'personal_details_button': ("XPATH", ".//a[contains(@href, '/web/index.php/pim/viewPersonalDetails')]"),
         'contact_details_button': ("XPATH", ".//a[contains(@href, '/web/index.php/pim/contactDetails')]"),
         'header_form_employee_element': ("XPATH", "//*[@id=\"app\"]/div[1]/div[2]/div[2]/div/div/div/div[2]/div[1]/h6"),
-        'marital_status_list': ("XPATH", "//*[@id=\"app\"]/div[1]/div[2]/div[2]/div/div/div/div[2]/div[1]/form/div[3]/div[1]/div[2]/div/div[2]"),
+        'marital_status_list': ("XPATH", "//*[@id=\"app\"]/div[1]/div[2]/div[2]/div/div/div/div[2]/div[1]/form/div[3]/div[1]/div[2]/div/div[2]/div/div"),
+        'marital_status_folowing_sibling': ("XPATH", "//*[@id=\"app\"]/div[1]/div[2]/div[2]/div/div/div/div[2]/div[1]/form/div[3]/div[1]/div[2]/div/div[2]/div/div/following-sibling::div"),
         'blood_type_list': ("XPATH", "//*[@id=\"app\"]/div[1]/div[2]/div[2]/div/div/div/div[2]/div[1]/form/div[3]/div[1]/div[2]/div/div[2]/div/div"),
         'pencil_button': ("XPATH", "//*[@class='oxd-icon bi-pencil-fill']"),
-        'id_employee_input': ("XPATH", "//*[@id=\"app\"]/div[1]/div[2]/div[2]/div/div/div/div[2]/div[1]/form/div[2]/div[1]/div[1]/div/div[2]/input") ,
-        'save_personal_detail_button': ("XPATH", "//*[@id=\"app\"]/div[1]/div[2]/div[2]/div/div/div/div[2]/div[1]/form/div[5]/button") 
+        'id_employee_input': ("XPATH", "//*[@id=\"app\"]/div[1]/div[2]/div[2]/div/div/div/div[2]/div[1]/form/div[2]/div[1]/div[1]/div/div[2]/input"),
+        'save_personal_detail_button': ("XPATH", "//*[@id=\"app\"]/div[1]/div[2]/div[2]/div/div/div/div[2]/div[1]/form/div[5]/button")
     }
 
     def verify_page(self) -> bool:
@@ -80,9 +82,9 @@ class PimPage(BasePage):
         path = Path(__file__).parent.parent.parent
 
         filename = os.path.join(
-                path, f'test/assets/{file_name}')
+            path, f'test/assets/{file_name}')
         file_exists = os.path.isfile(filename)
-    
+
         with open(filename, 'a', encoding="UTF8", newline='') as file:
             writer = csv.writer(file)
             if not file_exists:
@@ -112,9 +114,11 @@ class PimPage(BasePage):
 
             self.save_button.click_button()
 
-            self.save_data_csv('data_login_employees_valid.csv', ['username', 'password'], [user_name, password])
-            self.save_data_csv('data_employees_informations.csv', ['id_employee', 'first_name', 'last_name', 'username', 'password'], [id_employee, first_name, last_name, user_name, password])
-            
+            self.save_data_csv('data_login_employees_valid.csv', [
+                               'username', 'password'], [user_name, password])
+            self.save_data_csv('data_employees_informations.csv', ['id_employee', 'first_name', 'last_name', 'username', 'password'], [
+                               id_employee, first_name, last_name, user_name, password])
+
         else:
             self.id_employee.set_text(generate_id())
             self.save_button.click_button()
@@ -192,6 +196,9 @@ class PimPage(BasePage):
         # drop.select_by_visible_text(random.choice(marital_status))
 
         self.marital_status_list.click_button()
+        print('zzzzzzzzz', self.marital_status_folowing_sibling.get_attribute('innerHTML'))
+
+        time.sleep(2)
 
         # self.blood_type_list.click_button()
         # self.gender_button.click_button()
@@ -208,16 +215,22 @@ class PimPage(BasePage):
 
         self.save_button.click_button()
 
-    def update_id_employee(self) -> None: 
+    def upadate_csv_employee_id(self, old_id, new_id):
+        pass
+
+    def update_id_employee(self) -> None:
         '''
         Function to update employee's ID.
         '''
         id_employee = generate_id()
 
         self.pencil_button.click_button()
+        old_id_employee = self.id_employee_input.text
+
         self.id_employee_input.clear()
         self.id_employee_input.set_text(id_employee)
 
         self.save_personal_detail_button.click_button()
 
-        #  TODO: update in csv file the new ID  
+        #  TODO: update in csv file the new ID
+        self.update_csv_employee_id(old_id_employee, id_employee)
