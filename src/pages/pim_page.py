@@ -1,15 +1,13 @@
+from pathlib import Path
 import csv
 import os
+import time
+from selenium.webdriver.support.select import Select
 from selenium.webdriver.edge.webdriver import WebDriver
 from selenium.webdriver.common.by import By
 
 from src.base.base_page import BasePage
-
 from utils.common import *
-import time
-from os.path import join, dirname
-from pathlib import Path
-
 
 class PimPage(BasePage):
     def __init__(self, driver: WebDriver) -> None:
@@ -35,11 +33,14 @@ class PimPage(BasePage):
         'password_input': ("XPATH", "//*[@id=\"app\"]/div[1]/div[2]/div[2]/div/div/form/div[1]/div[2]/div[4]/div/div[1]/div/div[2]/input"),
         'confirm_password_input': ("XPATH", "//*[@id=\"app\"]/div[1]/div[2]/div[2]/div/div/form/div[1]/div[2]/div[4]/div/div[2]/div/div[2]/input"),
         'my_info_button': ("XPATH", "//*[@href= '/web/index.php/pim/viewMyDetails']"),
-        'personal_details_button': ("XPATH", "//*[@href= '/web/index.php/pim/viewPersonalDetails/empNumber/7']"),
-        'contact_details_button': ("XPATH", "//*[@href= '/web/index.php/pim/contactDetails/empNumber/7']"),
+        'personal_details_button': ("XPATH", ".//a[contains(@href, '/web/index.php/pim/viewPersonalDetails')]"),
+        'contact_details_button': ("XPATH", ".//a[contains(@href, '/web/index.php/pim/contactDetails')]"),
         'header_form_employee_element': ("XPATH", "//*[@id=\"app\"]/div[1]/div[2]/div[2]/div/div/div/div[2]/div[1]/h6"),
-        'marital_status_list': ("XPATH", "//*[@id=\"app\"]/div[1]/div[2]/div[2]/div/div/div/div[2]/div[1]/form/div[3]/div[1]/div[2]/div/div[2]/div/div"),
-        'blood_type_list': ("XPATH", "//*[@id=\"app\"]/div[1]/div[2]/div[2]/div/div/div/div[2]/div[1]/form/div[3]/div[1]/div[2]/div/div[2]/div/div")
+        'marital_status_list': ("XPATH", "//*[@id=\"app\"]/div[1]/div[2]/div[2]/div/div/div/div[2]/div[1]/form/div[3]/div[1]/div[2]/div/div[2]"),
+        'blood_type_list': ("XPATH", "//*[@id=\"app\"]/div[1]/div[2]/div[2]/div/div/div/div[2]/div[1]/form/div[3]/div[1]/div[2]/div/div[2]/div/div"),
+        'pencil_button': ("XPATH", "//*[@class='oxd-icon bi-pencil-fill']"),
+        'id_employee_input': ("XPATH", "//*[@id=\"app\"]/div[1]/div[2]/div[2]/div/div/div/div[2]/div[1]/form/div[2]/div[1]/div[1]/div/div[2]/input") ,
+        'save_personal_detail_button': ("XPATH", "//*[@id=\"app\"]/div[1]/div[2]/div[2]/div/div/div/div[2]/div[1]/form/div[5]/button") 
     }
 
     def verify_page(self) -> bool:
@@ -72,6 +73,22 @@ class PimPage(BasePage):
         '''
         self.add_button.click_button()
 
+    def save_data_csv(self, file_name, header_row, data_row):
+        '''
+        Function to save data in csv file.
+        '''
+        path = Path(__file__).parent.parent.parent
+
+        filename = os.path.join(
+                path, f'test/assets/{file_name}')
+        file_exists = os.path.isfile(filename)
+    
+        with open(filename, 'a', encoding="UTF8", newline='') as file:
+            writer = csv.writer(file)
+            if not file_exists:
+                writer.writerow(header_row)
+            writer.writerow(data_row)
+
     def fill_form_employee(self, with_username) -> None:
         '''
         Function to populate the employee form.
@@ -80,6 +97,7 @@ class PimPage(BasePage):
         last_name = generate_last_name()
         id_employee = generate_id()
         password = generate_password()
+        user_name = first_name+last_name
 
         if with_username:
             self.first_name.set_text(first_name)
@@ -88,26 +106,15 @@ class PimPage(BasePage):
 
             self.create_login_detail_button.click_button()
 
-            user_name = first_name+last_name
-
             self.username_input.set_text(user_name)
             self.password_input.set_text(password)
             self.confirm_password_input.set_text(password)
 
             self.save_button.click_button()
 
-            path = Path(__file__).parent.parent.parent
-
-            filename = os.path.join(
-                path, 'test/assets/data_login_employees_valid.csv')
-            file_exists = os.path.isfile(filename)
-
-            with open(filename, 'a', encoding="UTF8", newline='') as file:
-                writer = csv.writer(file)
-                if not file_exists:
-                    writer.writerow(['username', 'password'])
-                writer.writerow([user_name, password])
-
+            self.save_data_csv('data_login_employees_valid.csv', ['username', 'password'], [user_name, password])
+            self.save_data_csv('data_employees_informations.csv', ['id_employee', 'first_name', 'last_name', 'username', 'password'], [id_employee, first_name, last_name, user_name, password])
+            
         else:
             self.id_employee.set_text(generate_id())
             self.save_button.click_button()
@@ -180,9 +187,14 @@ class PimPage(BasePage):
         Function to insert marital status, blood type and gender in the personal details form.
         '''
         # TODO
+        marital_status = ["Single", "Married", "Other"]
+        # drop = Select(self.marital_status_list)
+        # drop.select_by_visible_text(random.choice(marital_status))
+
         self.marital_status_list.click_button()
-        self.blood_type_list.click_button()
-        self.gender_button.click_button()
+
+        # self.blood_type_list.click_button()
+        # self.gender_button.click_button()
 
         self.save_button.click_button()
 
@@ -195,3 +207,17 @@ class PimPage(BasePage):
         self.email_input.set_text(generate_email())
 
         self.save_button.click_button()
+
+    def update_id_employee(self) -> None: 
+        '''
+        Function to update employee's ID.
+        '''
+        id_employee = generate_id()
+
+        self.pencil_button.click_button()
+        self.id_employee_input.clear()
+        self.id_employee_input.set_text(id_employee)
+
+        self.save_personal_detail_button.click_button()
+
+        #  TODO: update in csv file the new ID  

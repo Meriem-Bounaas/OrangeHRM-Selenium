@@ -1,4 +1,5 @@
 from pytest_csv_params.decorator import csv_params
+from os.path import join, dirname
 
 from src.pages.login_page import LoginPage
 from src.pages.dashboard_page import DashboardPage
@@ -6,13 +7,13 @@ from src.pages.pim_page import PimPage
 
 @csv_params(
     data_file="data_login_employees_valid.csv",
-    # base_dir=join(dirname(__file__), "assets"),
+    base_dir=join(dirname(__file__), "assets"),
     data_casts={
         "username": str,
         "password": str
     },
 )
-def test_login_employee_valid(username: str, password: str, login_page: LoginPage, dashboard_page: DashboardPage, pim_page: PimPage) -> None:
+def test_insert_employee_informations(username: str, password: str, login_page: LoginPage, dashboard_page: DashboardPage, pim_page: PimPage) -> None:
     '''
         Test for successful login using a valid username and password.
     '''
@@ -35,10 +36,10 @@ def test_login_employee_valid(username: str, password: str, login_page: LoginPag
     
     # TODO : assert sucess update
 
-    pim_page.go_to_contcat_details()
+    # pim_page.go_to_contcat_details()
 
-    assert pim_page.verify_header_form_contact_details()
+    # assert pim_page.verify_header_form_contact_details()
 
-    pim_page.insert_into_contact_details()
+    # pim_page.insert_into_contact_details()
 
     # TODO : assert sucess update

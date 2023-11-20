@@ -23,7 +23,8 @@ def generate_id():
 
 
 def generate_password():
-    return f'{random.randint(100, 500)}_{fake.first_name()}_{random.randint(600, 900)}'
+    # return f'{random.randint(100, 500)}_{fake.first_name()}_{random.randint(600, 900)}'
+    return fake.password()
 
 
 def generate_email():
