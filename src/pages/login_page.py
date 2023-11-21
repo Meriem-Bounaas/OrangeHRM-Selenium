@@ -8,10 +8,10 @@ class LoginPage(BasePage):
         self.url = 'https://opensource-demo.orangehrmlive.com/web/index.php/auth/login'
 
     locators = {
-        'username': ("NAME", "username"),
-        'password': ("NAME", "password"),
-        'login_button': ("XPATH", "//*[@id=\"app\"]/div[1]/div/div[1]/div/div[2]/div[2]/form/div[3]/button"),
-        'login_element': ("XPATH", "//*[text()='Login']")
+        'username_input': ("NAME", "username"),
+        'password_input': ("NAME", "password"),
+        'login_button': ("XPATH", "//button[@type= 'submit']"),
+        'login_text': ("XPATH", "//*[text()='Login']")
     }
 
     def login(self, username: str, password: str) -> None:
@@ -19,8 +19,8 @@ class LoginPage(BasePage):
         Function for logging using a username and password.
         '''
         self.driver.get(self.url)
-        self.username.set_text(username)
-        self.password.set_text(password)
+        self.username_input.set_text(username)
+        self.password_input.set_text(password)
         self.login_button.click_button()
 
     def verify_page_title(self) -> bool:
@@ -45,4 +45,4 @@ class LoginPage(BasePage):
         '''
         Function to verify the existence of the text 'Login' on the page.
         '''
-        return bool(self.login_element)
+        return bool(self.login_text)

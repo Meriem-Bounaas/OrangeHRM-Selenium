@@ -14,6 +14,7 @@ from webdriver_manager.microsoft import EdgeChromiumDriverManager
 from src.pages.login_page import LoginPage
 from src.pages.dashboard_page import DashboardPage
 from src.pages.pim_page import PimPage
+from src.pages.my_info_page import MyinfoPage
 
 
 def pytest_addoption(parser) -> None:
@@ -81,3 +82,8 @@ def dashboard_page(browser: WebDriver) -> DashboardPage:
 def pim_page(browser: WebDriver) -> PimPage:
     pim = PimPage(browser)
     yield pim
+
+@pytest.fixture() 
+def my_info_page(browser: WebDriver) -> MyinfoPage:
+    my_info = MyinfoPage(browser)
+    yield my_info

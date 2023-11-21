@@ -9,9 +9,9 @@ class DashboardPage(BasePage):
         self.header = 'Dashboard'
     
     locators = {
-        'header_element': ("XPATH", "//*[@id=\"app\"]/div[1]/div[1]/header/div[1]/div[1]/span/h6"),
-        'PIM_button' : ("XPATH", "//*[@href=\"/web/index.php/pim/viewPimModule\"]"),
-        'user_button' : ("XPATH", "//*[@class= 'oxd-userdropdown-tab']"),
+        'header_element': ("XPATH", "//span[@class= 'oxd-topbar-header-breadcrumb']/descendant::h6"),
+        'pim_button' : ("XPATH", "//*[@href=\"/web/index.php/pim/viewPimModule\"]"),
+        'user_button' : ("XPATH", "//span[@class= 'oxd-userdropdown-tab']"),
         'logout_button' : ("XPATH", "//*[@href='/web/index.php/auth/logout']")
     }
 
@@ -25,7 +25,7 @@ class DashboardPage(BasePage):
         '''
         Function to go to PIM Page.
         '''
-        self.PIM_button.click_button()
+        self.pim_button.click_button()
 
     def logout(self) -> None:
         '''
@@ -33,5 +33,3 @@ class DashboardPage(BasePage):
         '''
         self.user_button.click_button()
         self.logout_button.click_button()
-
-
