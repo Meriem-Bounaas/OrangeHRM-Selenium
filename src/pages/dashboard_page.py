@@ -1,5 +1,7 @@
-from src.base.base_page import BasePage
 from selenium.webdriver.edge.webdriver import WebDriver
+
+from src.base.base_page import BasePage
+from utils.common import *
 
 class DashboardPage(BasePage):
     def __init__(self, driver: WebDriver) -> None:
@@ -25,11 +27,11 @@ class DashboardPage(BasePage):
         '''
         Function to go to PIM Page.
         '''
-        self.pim_button.click_button()
+        wait_click(self.driver, self.pim_button)
 
     def logout(self) -> None:
         '''
         Function to Logout.
         '''
-        self.user_button.click_button()
-        self.logout_button.click_button()
+        wait_click(self.driver, self.user_button)
+        wait_click(self.driver, self.logout_button)

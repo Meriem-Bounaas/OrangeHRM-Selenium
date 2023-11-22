@@ -1,5 +1,7 @@
 from selenium.webdriver.edge.webdriver import WebDriver
+
 from src.base.base_page import BasePage
+from utils.common import *
 
 class LoginPage(BasePage):
     def __init__(self, driver: WebDriver) -> None:
@@ -21,7 +23,7 @@ class LoginPage(BasePage):
         self.driver.get(self.url)
         self.username_input.set_text(username)
         self.password_input.set_text(password)
-        self.login_button.click_button()
+        wait_click(self.driver, self.login_button)
 
     def verify_page_title(self) -> bool:
         '''

@@ -62,7 +62,7 @@ class PimPage(BasePage):
         '''
         Function to click the 'Add' button for adding an employee.
         '''
-        self.add_button.click_button()
+        wait_click(self.driver, self.add_button)
 
     def save_data_csv(self, file_name, header_row, data_row):
         '''
@@ -95,13 +95,13 @@ class PimPage(BasePage):
             self.last_name_input.set_text(last_name)
             self.id_employee_input.set_text(id_employee)
 
-            self.create_login_detail_button.click_button()
+            wait_click(self.driver, self.create_login_detail_button)
 
             self.username_input.set_text(user_name)
             self.password_input.set_text(password)
             self.confirm_password_input.set_text(password)
 
-            self.save_button.click_button()
+            wait_click(self.driver, self.save_button)
 
             self.save_data_csv('data_login_employees_valid.csv', [
                                'username', 'password'], [user_name, password])
@@ -110,9 +110,9 @@ class PimPage(BasePage):
 
         else:
             self.id_employee_input.set_text(generate_id())
-            self.save_button.click_button()
+            wait_click(self.driver, self.save_button)
 
-        time.sleep(5)
+        time.sleep(1)
 
     def search_employee_by_id(self) -> object:
         '''
@@ -126,9 +126,9 @@ class PimPage(BasePage):
         first_name = employee_row.text.splitlines()[1]
         last_name = employee_row.text.splitlines()[2]
 
-        self.reset_button.click_button()
+        wait_click(self.driver, self.reset_button)
         self.id_employee_input.set_text(id_employee)
-        self.search_button.click_button()
+        wait_click(self.driver, self.search_button)
 
         return ([id_employee, first_name, last_name])
 
