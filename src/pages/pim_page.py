@@ -1,4 +1,5 @@
 from pathlib import Path
+import pandas as pd
 import csv
 import os
 import time
@@ -21,6 +22,7 @@ class PimPage(BasePage):
         'required_text': ("XPATH", "//*[text()='Required']"),
         'search_button': ("XPATH", "//*[@type='submit']"),
         'reset_button': ("XPATH", "//*[@type='reset']"),
+        'pencil_button': ("XPATH", "//*[@class='oxd-icon bi-pencil-fill']"),
         'first_name_input': ("XPATH", "//*[@name='firstName']"),
         'last_name_input': ("XPATH", "//*[@name='lastName']"),
         'header_element': ("XPATH", "//span[@class='oxd-topbar-header-breadcrumb']/h6"),
@@ -93,7 +95,10 @@ class PimPage(BasePage):
         if with_username:
             self.first_name_input.set_text(first_name)
             self.last_name_input.set_text(last_name)
-            self.id_employee_input.set_text(id_employee)
+            self.id_employee_input.set_attribute('value', id_employee)
+            time.sleep(2)
+            # print('xxxxxx', self.id_employee_input.get_attribute('value'))
+            # self.id_employee_input.set_text(id_employee)
 
             wait_click(self.driver, self.create_login_detail_button)
 
@@ -118,13 +123,18 @@ class PimPage(BasePage):
         '''
         Function to search an employee using ID.
         '''
-        table_employee = self.driver.find_elements(
-            By.XPATH, "//*[@class='oxd-table-card']")
-        employee_row = random.choice(table_employee)
+        path = Path(__file__).parent.parent.parent
+        filename = os.path.join(
+            path, 'test/assets/data_employees_informations.csv')
+        
+        with open(filename, encoding="UTF8", newline='') as f:
+            heading = next(f)
+            reader = csv.reader(f)
+            chosen_row = random.choice(list(reader))
 
-        id_employee = employee_row.text.splitlines()[0]
-        first_name = employee_row.text.splitlines()[1]
-        last_name = employee_row.text.splitlines()[2]
+        id_employee = chosen_row[0]
+        first_name = chosen_row[1]
+        last_name = chosen_row[2]
 
         wait_click(self.driver, self.reset_button)
         self.id_employee_input.set_text(id_employee)
@@ -144,3 +154,48 @@ class PimPage(BasePage):
         last_name = employees_table[0].text.splitlines()[2]
 
         return (len(employees_table) == 1) and (id_employee == employee_details[0]) and (first_name == employee_details[1]) and (last_name == employee_details[2])
+    
+    def update_csv_employee_id(self, old_id, new_id):
+        '''
+        Function to update employee id in csv file.
+        '''
+        path = Path(__file__).parent.parent.parent
+        filename = os.path.join(
+            path, 'test/assets/data_employees_informations.csv')
+
+        employee_informations_row = []
+        data = pd.read_csv(filename)
+
+        for i, row in enumerate(data):
+            data_row = [row]
+            
+            if data_row[0] == old_id:
+                employee_informations_row.append(row)
+
+                df = data.drop(data.index[i])
+                df.to_csv(filename, index=False)
+                break
+        
+        employee_informations_row[0] = new_id
+
+        with open(filename, 'a', encoding="UTF8", newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow(employee_informations_row)
+
+    def update_id_employee(self) -> None:
+        '''
+        Function to update employee's ID.
+        '''
+        new_id_employee = generate_id()
+
+        wait_click(self.driver, self.pencil_button)
+
+        old_id_employee = self.id_employee_input.text
+        self.id_employee_input.clear()
+        self.id_employee_input.set_text(new_id_employee)
+
+        save_button_list = self.driver.find_elements(By.XPATH, "//button[@type='submit']")
+
+        wait_click(self.driver, save_button_list[0])
+
+        self.update_csv_employee_id(old_id_employee, new_id_employee)

@@ -9,7 +9,6 @@ class MyinfoPage(BasePage):
         super().__init__(driver)
 
     locators = {
-        'pencil_button': ("XPATH", "//*[@class='oxd-icon bi-pencil-fill']"),
         'id_employee_input': ("XPATH", "//*[contains(text(),'Employee Id')]/parent::div/following-sibling::div/input"),
         'my_info_button': ("XPATH", "//*[@href= '/web/index.php/pim/viewMyDetails']"),
         'contact_details_button': ("XPATH", ".//a[contains(@href, '/web/index.php/pim/contactDetails')]"),
@@ -66,14 +65,15 @@ class MyinfoPage(BasePage):
 
         save_button_list = self.driver.find_elements(By.XPATH, "//button[@type='submit']")
 
-        save_button_list[0].click()
+        wait_click(self.driver, save_button_list[0])
 
         wait_click(self.driver, self.blood_type_element)
         blood_option_list = self.driver.find_elements(By.XPATH, "//*[@class = 'oxd-select-option']")
         blood_option = blood_option_list[random.randint(1,8)]
         wait_click(self.driver, blood_option)
 
-        save_button_list[1].click()
+        wait_click(self.driver, save_button_list[1])
+        
 
     def insert_into_contact_details(self) -> None:
         '''
@@ -84,23 +84,3 @@ class MyinfoPage(BasePage):
         self.email_input.set_text(generate_email())
 
         wait_click(self.driver, self.save_button)
-
-    def upadate_csv_employee_id(self, old_id, new_id):
-        pass
-
-    def update_id_employee(self) -> None:
-        '''
-        Function to update employee's ID.
-        '''
-        id_employee = generate_id()
-
-        wait_click(self.driver, self.pencil_button)
-        old_id_employee = self.id_employee_input.text
-
-        self.id_employee_input.clear()
-        self.id_employee_input.set_text(id_employee)
-
-        wait_click(self.driver, self.save_personal_detail_button)
-
-        #  TODO: update in csv file the new ID
-        # self.update_csv_employee_id(old_id_employee, id_employee)

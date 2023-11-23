@@ -32,5 +32,4 @@ def test_update_id_employee(username: str, password: str, dashboard_page: Dashbo
 
     assert pim_page.verify_existence_of_one_employee(employee_details)
 
-    # TODO:
     pim_page.update_id_employee()
