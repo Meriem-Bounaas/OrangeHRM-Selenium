@@ -95,10 +95,9 @@ class PimPage(BasePage):
         if with_username:
             self.first_name_input.set_text(first_name)
             self.last_name_input.set_text(last_name)
-            self.id_employee_input.set_attribute('value', id_employee)
-            time.sleep(2)
-            # print('xxxxxx', self.id_employee_input.get_attribute('value'))
-            # self.id_employee_input.set_text(id_employee)
+            self.id_employee_input.set_text(id_employee)
+
+            new_id_employee = self.id_employee_input.get_attribute('value')
 
             wait_click(self.driver, self.create_login_detail_button)
 
@@ -111,7 +110,7 @@ class PimPage(BasePage):
             self.save_data_csv('data_login_employees_valid.csv', [
                                'username', 'password'], [user_name, password])
             self.save_data_csv('data_employees_informations.csv', ['id_employee', 'first_name', 'last_name', 'username', 'password'], [
-                               id_employee, first_name, last_name, user_name, password])
+                               new_id_employee, first_name, last_name, user_name, password])
 
         else:
             self.id_employee_input.set_text(generate_id())
@@ -166,10 +165,14 @@ class PimPage(BasePage):
         employee_informations_row = []
         data = pd.read_csv(filename)
 
-        for i, row in enumerate(data):
-            data_row = [row]
-            
-            if data_row[0] == old_id:
+        for i, row in enumerate(data.itertuples()):
+            id_employee = row.id_employee
+            first_name = row.first_name
+            last_name = row.last_name
+            username = row.username
+            password = row.password
+
+            if id_employee == old_id:
                 employee_informations_row.append(row)
 
                 df = data.drop(data.index[i])
@@ -177,6 +180,10 @@ class PimPage(BasePage):
                 break
         
         employee_informations_row[0] = new_id
+        employee_informations_row.append(first_name)
+        employee_informations_row.append(last_name)
+        employee_informations_row.append(username)
+        employee_informations_row.append(password)
 
         with open(filename, 'a', encoding="UTF8", newline='') as file:
             writer = csv.writer(file)
@@ -186,13 +193,16 @@ class PimPage(BasePage):
         '''
         Function to update employee's ID.
         '''
-        new_id_employee = generate_id()
+        id_genere= generate_id()
 
         wait_click(self.driver, self.pencil_button)
+        
+        time.sleep(1)
+        old_id_employee = self.id_employee_input.get_attribute('value')
 
-        old_id_employee = self.id_employee_input.text
-        self.id_employee_input.clear()
-        self.id_employee_input.set_text(new_id_employee)
+        self.id_employee_input.set_text(id_genere)
+        
+        new_id_employee = self.id_employee_input.get_attribute('value')
 
         save_button_list = self.driver.find_elements(By.XPATH, "//button[@type='submit']")
 

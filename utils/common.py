@@ -25,10 +25,9 @@ def generate_last_name():
 
 def generate_id():
     characters = string.ascii_letters + string.digits
-    return ''.join(random.choice(characters) for _ in range(5))
+    return ''.join(random.choice(characters) for _ in range(2))
 
 def generate_password():
-    # return f'{random.randint(100, 500)}_{fake.first_name()}_{random.randint(600, 900)}'
     return fake.password()
 
 def generate_email():
