@@ -8,7 +8,7 @@ from src.pages.my_info_page import MyinfoPage
 
 @csv_params(
     data_file="data_login_admin_valid.csv",
-    base_dir=join(dirname(__file__), "assets"),
+    base_dir=join(dirname(__file__), "../assets"),
     data_casts={
         "username": str,
         "password": str
@@ -16,7 +16,7 @@ from src.pages.my_info_page import MyinfoPage
 )
 @csv_params(
     data_file="data_employees_informations.csv",
-    base_dir=join(dirname(__file__), "assets"),
+    base_dir=join(dirname(__file__), "../assets"),
     data_casts={
         "id_employee": str,
         "first_name": str,
