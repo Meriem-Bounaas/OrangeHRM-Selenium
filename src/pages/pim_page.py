@@ -31,6 +31,7 @@ class PimPage(BasePage):
         'save_button': ("XPATH", "//*[@type='submit']"),
         'create_login_detail_button': ("XPATH", "//*[@class='oxd-switch-input oxd-switch-input--active --label-right']"),
         'profile_picture_element': ("XPATH", "//*[@class='employee-image']"),
+        'personal_details_button': ("XPATH", ".//a[contains(@href, '/web/index.php/pim/viewPersonalDetails')]"),
         'username_input': ("XPATH", "//label[text() = 'Username']/parent::div/following-sibling::div/input"),
         'password_input': ("XPATH", "//label[text() = 'Password']/parent::div/following-sibling::div/input"),
         'confirm_password_input': ("XPATH", "//label[text() = 'Confirm Password']/parent::div/following-sibling::div/input")
@@ -48,11 +49,11 @@ class PimPage(BasePage):
         '''
         return bool(self.save_button)
 
-    def verify_existence_of_profile_picture(self) -> bool:
+    def verify_existence_personal_details_button(self) -> bool:
         '''
         Function to verify the existence of the text 'Personel Details' on the page.
         '''
-        return bool(self.profile_picture_element)
+        return bool(self.personal_details_button)
 
     def verify_existence_of_required_text(self) -> bool:
         '''
@@ -109,7 +110,7 @@ class PimPage(BasePage):
 
             self.save_data_csv('data_login_employees_valid.csv', [
                                'username', 'password'], [user_name, password])
-            self.save_data_csv('data_employees_informations.csv', ['id_employee', 'first_name', 'last_name', 'username', 'password'], [
+            self.save_data_csv('data_employees_informations.csv', ['id_employee', 'first_name', 'last_name', 'username_employee', 'password_employee'], [
                                new_id_employee, first_name, last_name, user_name, password])
 
         else:
@@ -169,8 +170,8 @@ class PimPage(BasePage):
             id_employee = row.id_employee
             first_name = row.first_name
             last_name = row.last_name
-            username = row.username
-            password = row.password
+            username = row.username_employee
+            password = row.password_employee
 
             if id_employee == old_id:
                 employee_informations_row.append(row)
@@ -197,7 +198,6 @@ class PimPage(BasePage):
 
         wait_click(self.driver, self.pencil_button)
         
-        time.sleep(1)
         old_id_employee = self.id_employee_input.get_attribute('value')
 
         self.id_employee_input.set_text(id_genere)

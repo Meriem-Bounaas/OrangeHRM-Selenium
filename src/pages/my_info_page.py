@@ -18,8 +18,11 @@ class MyinfoPage(BasePage):
         'blood_type_list': ("XPATH", "//label[text()= 'Blood Type']/parent::div/following-sibling::div"),
         'save_personal_detail_button': ("XPATH", "//div[@class = 'oxd-form-actions']/descendant::button/preceding-sibling::p/following-sibling::button"),
         'header_form_employee': ("XPATH", "//div[@class= 'orangehrm-edit-employee-content']/div[1]/h6"),
-        'save_button_first_form': ("XPATH", "//button[@type= 'submit']/preceding-sibling::p"),
-        'save_button_second_form': ("XPATH", "")
+        'toaster_success': ("XPATH", "//*[@class='oxd-toast oxd-toast--success oxd-toast-container--toast']"),
+        'city_input': ("XPATH", "//label[text()= 'City']/parent::div/following-sibling::div/input"),
+        'zip_input': ("XPATH", "//label[text()= 'Zip/Postal Code']/parent::div/following-sibling::div/input"),
+        'email_input': ("XPATH", "//label[text()= 'Work Email']/parent::div/following-sibling::div/input"),
+        'save_button': ("XPATH", '//button[@type="submit"]')
     }
 
     def go_to_my_info(self) -> None:
@@ -34,7 +37,7 @@ class MyinfoPage(BasePage):
         '''
         wait_click(self.driver, self.personal_details_button)
 
-    def go_to_contcat_details(self) -> None:
+    def go_to_contact_details(self) -> None:
         '''
         Function to click and access an employee's contact details.
         '''
@@ -51,10 +54,16 @@ class MyinfoPage(BasePage):
         Function to verify the header of the contact details form.
         '''
         return verify_header_of_my_info_page(self.header_form_employee, 'Contact Details')
-
-    def insert_into_personal_details(self) -> None:
+    
+    def verify_toaster_success(self) -> bool:
         '''
-        Function to insert marital status, blood type and gender in the personal details form.
+        Function to verify the appearance of toaster success.
+        '''
+        return bool(self.toaster_success)
+
+    def insert_marital_status_and_gender_into_personal_details(self) -> None:
+        '''
+        Function to insert marital status and gender in the personal details form.
         '''
         wait_click(self.driver, self.marital_status_element)
         marital_status_option_list = self.driver.find_elements(By.XPATH, "//*[@class = 'oxd-select-option']")
@@ -67,6 +76,12 @@ class MyinfoPage(BasePage):
 
         wait_click(self.driver, save_button_list[0])
 
+    def insert_blood_type_into_personal_details(self) -> None:
+        '''
+        Function to insert blood type in the personal details form.
+        '''
+        save_button_list = self.driver.find_elements(By.XPATH, "//button[@type='submit']")
+
         wait_click(self.driver, self.blood_type_element)
         blood_option_list = self.driver.find_elements(By.XPATH, "//*[@class = 'oxd-select-option']")
         blood_option = blood_option_list[random.randint(1,8)]
@@ -74,7 +89,6 @@ class MyinfoPage(BasePage):
 
         wait_click(self.driver, save_button_list[1])
         
-
     def insert_into_contact_details(self) -> None:
         '''
         Function to insert city, zip code and email in the contact details form.

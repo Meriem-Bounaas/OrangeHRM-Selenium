@@ -14,7 +14,18 @@ from src.pages.my_info_page import MyinfoPage
         "password": str
     },
 )
-def test_end_to_end_ok(username: str, password: str, login_page: LoginPage, dashboard_page: DashboardPage, pim_page: PimPage, my_info_page: MyinfoPage) -> None:
+@csv_params(
+    data_file="data_employees_informations.csv",
+    base_dir=join(dirname(__file__), "assets"),
+    data_casts={
+        "id_employee": str,
+        "first_name": str,
+        "last_name": str,
+        "username_employee": str,
+        "password_employee": str
+    },
+)
+def test_end_to_end_ok(username: str, password: str, id_employee: str, first_name: str, last_name: str, username_employee: str, password_employee: str, login_page: LoginPage, dashboard_page: DashboardPage, pim_page: PimPage, my_info_page: MyinfoPage) -> None:
     '''
         Test end to end successful .
     '''
@@ -24,8 +35,6 @@ def test_end_to_end_ok(username: str, password: str, login_page: LoginPage, dash
     login_page.login(username, password)
 
     assert dashboard_page.verify_page()
-
-    # CT 2
 
     dashboard_page.go_to_pim_page()
 
@@ -37,9 +46,7 @@ def test_end_to_end_ok(username: str, password: str, login_page: LoginPage, dash
 
     pim_page.fill_form_employee(True)
 
-    assert pim_page.verify_existence_of_profile_picture()
-
-    # CT 3
+    assert pim_page.verify_existence_personal_details_button()
 
     dashboard_page.go_to_pim_page()
 
@@ -49,48 +56,52 @@ def test_end_to_end_ok(username: str, password: str, login_page: LoginPage, dash
 
     assert pim_page.verify_existence_of_one_employee(employee_details)
 
-    #  CT 4
-
-    # TODO:
     pim_page.update_id_employee()
 
-    #  CT 5
+    assert my_info_page.verify_toaster_success()
+    
+    dashboard_page.go_to_pim_page()
 
+    assert pim_page.verify_page()
+
+    employee_details = pim_page.search_employee_by_id()
+
+    assert pim_page.verify_existence_of_one_employee(employee_details)
+    
     dashboard_page.logout()
 
     assert login_page.verify_existence_of_login_text()
 
-    #  CT 6 :: with csv params
-
     assert login_page.verify_page_title()
     assert login_page.verify_page_url()
 
-    login_page.login(username, password)
-    assert dashboard_page.verify_page()
+    login_page.login(username_employee, password_employee)
 
-    #  CT 7 
+    assert dashboard_page.verify_page()
 
     my_info_page.go_to_my_info()
 
-    assert pim_page.verify_existence_of_profile_picture()
+    assert pim_page.verify_existence_personal_details_button()
 
     my_info_page.go_to_personal_details()
 
     assert my_info_page.verify_header_form_personal_details()
-
-    my_info_page.insert_into_personal_details()
     
-    # TODO : assert sucess update
+    my_info_page.insert_marital_status_and_gender_into_personal_details()
+    
+    assert my_info_page.verify_toaster_success()
 
-    # my_info_page.go_to_contcat_details()
+    my_info_page.insert_blood_type_into_personal_details()
+    
+    assert my_info_page.verify_toaster_success()
 
-    # assert my_info_page.verify_header_form_contact_details()
+    my_info_page.go_to_contact_details()
 
-    # my_info_page.insert_into_contact_details()
+    assert my_info_page.verify_header_form_contact_details()
 
-    # TODO : assert sucess update
+    my_info_page.insert_into_contact_details()
 
-    #  CT 8
+    assert my_info_page.verify_toaster_success()
 
     dashboard_page.logout()
 

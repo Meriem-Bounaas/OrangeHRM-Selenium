@@ -4,6 +4,7 @@ from pytest_csv_params.decorator import csv_params
 from src.pages.dashboard_page import DashboardPage
 from src.pages.login_page import LoginPage
 from src.pages.pim_page import PimPage
+from src.pages.my_info_page import MyinfoPage
 
 @csv_params(
     data_file="data_login_admin_valid.csv",
@@ -13,7 +14,7 @@ from src.pages.pim_page import PimPage
         "password": str
     },
 )
-def test_update_id_employee(username: str, password: str, dashboard_page: DashboardPage, pim_page: PimPage, login_page: LoginPage) -> None:
+def test_update_id_employee(username: str, password: str, dashboard_page: DashboardPage, pim_page: PimPage, login_page: LoginPage, my_info_page: MyinfoPage) -> None:
     '''
     Test to update employee's ID.
     '''
@@ -33,3 +34,5 @@ def test_update_id_employee(username: str, password: str, dashboard_page: Dashbo
     assert pim_page.verify_existence_of_one_employee(employee_details)
 
     pim_page.update_id_employee()
+
+    assert my_info_page.verify_toaster_success()

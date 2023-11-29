@@ -1,5 +1,5 @@
 # About OrangeHRM
-
+OrangeHRM Automation Framework is an open-source solution designed for Human Resource Management (HRM) tasks.
 
 # Test Cases:
 
@@ -8,9 +8,10 @@
 3. Create an employee.
 4. Create an employee without username.
 5. Search for an employee by ID.
-6. Logout as the administrator.
-7. Login using the valid credentials of the created employee.
-8. Insert the employee's Gender,Marital Status, Blood, Address and email.
+6. Update employee's ID.
+7. Logout as the administrator.
+8. Login using the valid credentials of the created employee.
+9. Insert the employee's Gender,Marital Status, Blood, Address and email.
 
 # Scenarios:
 1. Login to orange hrm demo site: https://opensource-demo.orangehrmlive.com/
@@ -25,6 +26,10 @@
 10. Logout the user
 
 ### Allure Report:
+
+<img src="./src/media/Allure-report.png">
+<br></br>
+<img src="./src/media/Allure-report-behaviors.png">
 
 ### Technology used:
 - Selenium Webdriver 

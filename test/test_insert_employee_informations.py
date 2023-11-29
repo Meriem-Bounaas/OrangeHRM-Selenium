@@ -27,20 +27,24 @@ def test_insert_employee_informations(username: str, password: str, login_page: 
 
     my_info_page.go_to_my_info()
 
-    assert pim_page.verify_existence_of_profile_picture()
+    assert pim_page.verify_existence_personal_details_button()
 
     my_info_page.go_to_personal_details()
 
     assert my_info_page.verify_header_form_personal_details()
 
-    my_info_page.insert_into_personal_details()
+    my_info_page.insert_marital_status_and_gender_into_personal_details()
     
-    # TODO : assert sucess update
+    assert my_info_page.verify_toaster_success()
 
-    # my_info_page.go_to_contcat_details()
+    my_info_page.insert_blood_type_into_personal_details()
+    
+    assert my_info_page.verify_toaster_success()
 
-    # assert my_info_page.verify_header_form_contact_details()
+    my_info_page.go_to_contact_details()
 
-    # my_info_page.insert_into_contact_details()
+    assert my_info_page.verify_header_form_contact_details()
 
-    # TODO : assert sucess update
+    my_info_page.insert_into_contact_details()
+
+    assert my_info_page.verify_toaster_success()

@@ -35,4 +35,4 @@ def test_add_employee_valid(username: str, password: str, dashboard_page: Dashbo
 
     pim_page.fill_form_employee(True)
 
-    assert pim_page.verify_existence_of_profile_picture()
+    assert pim_page.verify_existence_personal_details_button()
